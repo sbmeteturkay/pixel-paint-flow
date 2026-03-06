@@ -8,6 +8,7 @@ namespace SabanCoreTemplate
     public class GameLifetimeScope : LifetimeScope
     {
         [SerializeField] private LoadingScreen _loadingScreenPrefab;
+        [SerializeField] private GameObject _defaultSystemsPrefab; // AudioListener + EventSystem
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -20,6 +21,9 @@ namespace SabanCoreTemplate
 
             // Bootstrapper entry point — Start()'ta MainMenu'ya geçer
             builder.RegisterEntryPoint<Bootstrapper>();
+
+            GameObject systems = Instantiate(_defaultSystemsPrefab);
+            DontDestroyOnLoad(systems);
         }
     }
 }
