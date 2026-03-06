@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using MessagePipe;
-using UnityEngine;
-using VContainer;
 using PaintFlow.Core.EventSystem.Events;
+using PaintFlow.Features.Requester;
+using UnityEngine;
 using UnityEngine.Splines;
+using VContainer;
 
 namespace PaintFlow.Features.Belt
 {
@@ -12,38 +13,40 @@ namespace PaintFlow.Features.Belt
         [SerializeField] private SplineContainer _splineContainer;
         [SerializeField] private BeltDataSO _beltData;
 
-        private IPublisher<BeltFullEvent> _beltFullPublisher;
-        private IPublisher<BlockAddedToBeltEvent> _blockAddedPublisher;
-        private IPublisher<BlockRemovedFromBeltEvent> _blockRemovedPublisher;
-
         private readonly List<BlockController> _activeBlocks = new();
 
-        public float SplineLength { get; private set; }
-        public int CurrentBlockCount => _activeBlocks.Count;
-        public int MaxCapacity => _beltData.MaxCapacity;
+        private IPublisher<BeltFullEvent> _beltFullPublisher;
+        private IPublisher<BlockAddedToBeltEvent> _blockAddedPublisher;
+        private IPublisher<BlockPositionUpdatedEvent> _blockPositionPublisher;
+        private IPublisher<BlockRemovedFromBeltEvent> _blockRemovedPublisher;
 
-        [Inject]
-        public void Construct(
-            IPublisher<BeltFullEvent> beltFullPublisher,
-            IPublisher<BlockAddedToBeltEvent> blockAddedPublisher,
-            IPublisher<BlockRemovedFromBeltEvent> blockRemovedPublisher)
-        {
-            _beltFullPublisher = beltFullPublisher;
-            _blockAddedPublisher = blockAddedPublisher;
-            _blockRemovedPublisher = blockRemovedPublisher;
-        }
+        private List<IRequester> _requesters;
 
         private void Awake()
         {
             SplineLength = _splineContainer.CalculateLength();
         }
 
+        private void Update()
+        {
+            foreach (BlockController block in _activeBlocks)
+                // Her aktif blok için
+            {
+                _blockPositionPublisher.Publish(new(block, block.T));
+            }
+        }
+
+        public float SplineLength { get; private set; }
+        public int CurrentBlockCount => _activeBlocks.Count;
+
+        public int MaxCapacity => _beltData.MaxCapacity;
+
         // ─── IBeltController ─────────────────────────────────────
         public bool TryAddBlock(BlockController block)
         {
             if (_activeBlocks.Count >= _beltData.MaxCapacity)
             {
-                _beltFullPublisher.Publish(new BeltFullEvent());
+                _beltFullPublisher.Publish(new());
                 return false;
             }
 
@@ -52,7 +55,7 @@ namespace PaintFlow.Features.Belt
             block.GetComponent<BeltMover>().Initialize(_splineContainer, _beltData.BeltSpeed, SplineLength);
             block.EnterBelt();
 
-            _blockAddedPublisher.Publish(new BlockAddedToBeltEvent(_activeBlocks.Count, _beltData.MaxCapacity));
+            _blockAddedPublisher.Publish(new(_activeBlocks.Count, _beltData.MaxCapacity));
             return true;
         }
 
@@ -63,7 +66,23 @@ namespace PaintFlow.Features.Belt
             _activeBlocks.Remove(block);
             block.OnJumpComplete -= HandleJumpComplete;
 
-            _blockRemovedPublisher.Publish(new BlockRemovedFromBeltEvent(_activeBlocks.Count, _beltData.MaxCapacity));
+            _blockRemovedPublisher.Publish(new(_activeBlocks.Count, _beltData.MaxCapacity));
+        }
+
+        public void RegisterRequester(IRequester requester)
+        {
+            _requesters.Add(requester);
+        }
+
+        [Inject]
+        public void Construct(
+            IPublisher<BeltFullEvent> beltFullPublisher,
+            IPublisher<BlockAddedToBeltEvent> blockAddedPublisher,
+            IPublisher<BlockRemovedFromBeltEvent> blockRemovedPublisher)
+        {
+            _beltFullPublisher = beltFullPublisher;
+            _blockAddedPublisher = blockAddedPublisher;
+            _blockRemovedPublisher = blockRemovedPublisher;
         }
 
         // ─── Private ─────────────────────────────────────────────
