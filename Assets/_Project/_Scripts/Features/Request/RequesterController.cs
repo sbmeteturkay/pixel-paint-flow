@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using MessagePipe;
-using PaintFlow.Core.EventSystem.Events;
 using PaintFlow.Features.Belt;
+using PaintFlow.Shared.EventSystem.Events;
 using UnityEngine;
 using VContainer;
 
@@ -91,10 +91,11 @@ namespace PaintFlow.Features.Requester
             block.JumpToTarget(transform.position);
 
             ColorRequest current = _requests[_currentRequestIndex];
+            Vector2Int pixel = current.ConsumeNextPixel();
             current.Amount--;
             _requests[_currentRequestIndex] = current;
 
-            _blockMatchedPublisher.Publish(new(Id, current.ColorIndex));
+            _blockMatchedPublisher.Publish(new(Id, current.ColorIndex, pixel));
 
             if (current.Amount <= 0)
             {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MessagePipe;
-using PaintFlow.Core.EventSystem.Events;
 using PaintFlow.Features.Requester;
+using PaintFlow.Shared.EventSystem.Events;
 using UnityEngine;
 using UnityEngine.Splines;
 using VContainer;

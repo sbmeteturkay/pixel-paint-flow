@@ -1,8 +1,11 @@
+// Features/Belt/Scripts/BlockController.cs
+
 using System;
 using Cysharp.Threading.Tasks;
 using PaintFlow.Shared;
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace PaintFlow.Features.Belt
 {
@@ -13,9 +16,10 @@ namespace PaintFlow.Features.Belt
         Jumping
     }
 
-    public class BlockController : MonoBehaviour, IPoolable
+    public class BlockController : MonoBehaviour, IPoolable, IPointerClickHandler
     {
         [SerializeField] private BeltMover _beltMover;
+        private Action<BlockController> _onTapped;
 
         public Action<BlockController> OnJumpComplete;
 
@@ -23,11 +27,19 @@ namespace PaintFlow.Features.Belt
         public float T => _beltMover.GetCurrentT();
         public BlockState CurrentState { get; private set; }
 
+        // ─── IPointerClickHandler ────────────────────────────────
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (CurrentState != BlockState.Idle) return;
+            _onTapped?.Invoke(this);
+        }
+
         // ─── IPoolable ───────────────────────────────────────────
         public void OnSpawn()
         {
             CurrentState = BlockState.Idle;
             _beltMover.enabled = false;
+            _onTapped = null;
         }
 
         public void OnDespawn()
@@ -35,17 +47,25 @@ namespace PaintFlow.Features.Belt
             CurrentState = BlockState.Idle;
             _beltMover.enabled = false;
             OnJumpComplete = null;
+            _onTapped = null;
         }
 
         // ─── Public API ──────────────────────────────────────────
-        public void SetColor(Color color)
+        public void SetColor(int colorIndex)
         {
+            ColorIndex = colorIndex;
             // TODO: palette[colorIndex] → renderer'a uygula
+        }
+
+        public void SetTapCallback(Action<BlockController> onTapped)
+        {
+            _onTapped = onTapped;
         }
 
         public void EnterBelt()
         {
             if (CurrentState != BlockState.Idle) return;
+            _onTapped = null;
             CurrentState = BlockState.OnBelt;
             _beltMover.enabled = true;
         }

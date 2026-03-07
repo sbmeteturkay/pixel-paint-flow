@@ -1,6 +1,6 @@
 using PaintFlow.Features.Belt;
 
-namespace PaintFlow.Core.EventSystem.Events
+namespace PaintFlow.Shared.EventSystem.Events
 {
     public readonly struct BeltFullEvent
     {

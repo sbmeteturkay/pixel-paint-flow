@@ -13,40 +13,48 @@ namespace PaintFlow.Features.Belt
         private IBeltController _beltController;
         private ObjectPool<BlockController> _pool;
 
+        private void Awake()
+        {
+            _pool = new(
+                CreateBlock,
+                OnBlockGet,
+                OnBlockRelease,
+                OnBlockDestroy,
+                false,
+                _defaultCapacity,
+                _maxPoolSize
+            );
+        }
+
         [Inject]
         public void Construct(IBeltController beltController)
         {
             _beltController = beltController;
         }
 
-        private void Awake()
-        {
-            _pool = new ObjectPool<BlockController>(
-                createFunc: CreateBlock,
-                actionOnGet: OnBlockGet,
-                actionOnRelease: OnBlockRelease,
-                actionOnDestroy: OnBlockDestroy,
-                collectionCheck: false,
-                defaultCapacity: _defaultCapacity,
-                maxSize: _maxPoolSize
-            );
-        }
-
         // ─── Public API ──────────────────────────────────────────
-        public void SpawnBlock(Color color, Vector3 spawnPosition)
+        public bool SpawnBlock(int colorIndex, Vector3 spawnPosition)
         {
-            var block = _pool.Get();
+            BlockController block = _pool.Get();
             block.transform.position = spawnPosition;
-            block.SetColor(color);
+            block.SetColor(colorIndex);
             block.OnJumpComplete += HandleJumpComplete;
 
-            _beltController.TryAddBlock(block);
+            bool added = _beltController.TryAddBlock(block);
+
+            if (!added)
+            {
+                block.OnJumpComplete -= HandleJumpComplete;
+                _pool.Release(block);
+            }
+
+            return added;
         }
 
         // ─── Pool Callbacks ──────────────────────────────────────
         private BlockController CreateBlock()
         {
-            var block = Instantiate(_blockPrefab, transform);
+            BlockController block = Instantiate(_blockPrefab, transform);
             return block;
         }
 
@@ -72,6 +80,11 @@ namespace PaintFlow.Features.Belt
         {
             block.OnJumpComplete -= HandleJumpComplete;
             _pool.Release(block);
+        }
+
+        public BlockController GetFromPool()
+        {
+            return _pool.Get();
         }
     }
 }
