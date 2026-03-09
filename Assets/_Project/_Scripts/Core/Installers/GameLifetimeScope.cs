@@ -1,29 +1,38 @@
-using SabanCoreTemplate.SceneManagement;
+using MessagePipe;
+using PaintFlow.Features.ItemRequester;
+using PaintFlow.Features.Level;
+using PaintFlow.Features.QueueLane;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace SabanCoreTemplate
+namespace PaintFlow.Core.Installers
 {
     public class GameLifetimeScope : LifetimeScope
     {
-        [SerializeField] private LoadingScreen _loadingScreenPrefab;
-        [SerializeField] private GameObject _defaultSystemsPrefab; // AudioListener + EventSystem
+        [SerializeField] private LevelLoader _levelLoader;
+        [SerializeField] private QueueLaneFeature _queueLaneFeature;
+        [SerializeField] private ThrownItemBuffer _thrownItemBuffer;
+        [SerializeField] private ItemRequesterFeature _itemRequesterFeature;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            // LoadingScreen — DontDestroyOnLoad, instantiate edilir
-            LoadingScreen loadingScreen = Instantiate(_loadingScreenPrefab);
-            builder.RegisterInstance(loadingScreen);
+            MessagePipeOptions options = builder.RegisterMessagePipe();
+            builder.RegisterMessageBroker<QueueLaneItemPoppedEvent>(options);
 
-            // SceneLoader — ISceneLoader üzerinden inject edilir
-            builder.Register<ISceneLoader, SceneLoader>(Lifetime.Singleton);
+            RegisterIfNotNull(builder, _levelLoader);
+            RegisterIfNotNull(builder, _queueLaneFeature);
+            RegisterIfNotNull(builder, _thrownItemBuffer);
+            RegisterIfNotNull(builder, _itemRequesterFeature);
+        }
 
-            // Bootstrapper entry point — Start()'ta MainMenu'ya geçer
-            builder.RegisterEntryPoint<Bootstrapper>();
-
-            GameObject systems = Instantiate(_defaultSystemsPrefab);
-            DontDestroyOnLoad(systems);
+        private static void RegisterIfNotNull<T>(IContainerBuilder builder, T component)
+            where T : Component
+        {
+            if (component != null)
+            {
+                builder.RegisterComponent(component);
+            }
         }
     }
 }

@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &100475665
+--- !u!1 &30897139
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,43 +127,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 100475667}
-  - component: {fileID: 100475666}
+  - component: {fileID: 30897141}
+  - component: {fileID: 30897140}
   m_Layer: 0
-  m_Name: GameLifetimeScope
+  m_Name: AppLifetimeScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &100475666
+--- !u!114 &30897140
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100475665}
+  m_GameObject: {fileID: 30897139}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3738c7013240d9a499402fd0be118d01, type: 3}
+  m_Script: {fileID: 11500000, guid: 889a301045a84ae5b178381f917ac15c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SabanCoreTemplate.GameLifetimeScope
+  m_EditorClassIdentifier: Assembly-CSharp::SabanCoreTemplate.AppLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
   _loadingScreenPrefab: {fileID: 1932280626836227872, guid: 30423a00d55cfeb4c86ec2aacdc98d9f, type: 3}
-  _defaultSystemsPrefab: {fileID: 5002190242059292516, guid: bd43cc41d8a10084a9669ced4d2d2d7a, type: 3}
---- !u!4 &100475667
+--- !u!4 &30897141
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100475665}
+  m_GameObject: {fileID: 30897139}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: -0}
+  m_LocalPosition: {x: 1.57638, y: -14.0661, z: -1.65895}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -173,4 +172,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 100475667}
+  - {fileID: 30897141}

@@ -19,7 +19,7 @@ namespace SabanCoreTemplate.SceneManagement
 
         private async UniTaskVoid LoadMainMenuAsync()
         {
-            await _sceneLoader.LoadAsync("MainMenu");
+            await _sceneLoader.LoadAsync("Gameplay");
         }
     }
 }

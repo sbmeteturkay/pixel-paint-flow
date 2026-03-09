@@ -1,5 +1,4 @@
 // Core/SceneManagement/EditorBootstrapper.cs
-// SADECE editörde çalışır — build'e dahil olmaz
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,29 +11,47 @@ namespace SabanCoreTemplate.SceneManagement
     public static class EditorBootstrapper
     {
         private const string BootScenePath = "Assets/_Project/Scenes/Boot.unity";
-
-        static EditorBootstrapper()
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeChanged;
-        }
+        private const string PreviousSceneKey = "EditorBootstrapper_PreviousScene";
 
         private static void OnPlayModeChanged(PlayModeStateChange state)
         {
-            if (state != PlayModeStateChange.ExitingEditMode) return;
-
-            // Zaten Boot sahnesindeyse dokunma
-            if (SceneManager.GetActiveScene().path == BootScenePath) return;
-
-            // Kaydedilmemiş değişiklik varsa sor
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            // --- OYUNA GİRERKEN ---
+            if (state == PlayModeStateChange.ExitingEditMode)
             {
-                // İptal ettiyse play mode'a girme
-                EditorApplication.isPlaying = false;
-                return;
+                string currentScene = SceneManager.GetActiveScene().path;
+
+                // Eğer zaten Boot sahnesindeysek bir şey yapmaya gerek yok
+                if (currentScene == BootScenePath) return;
+
+                // Mevcut sahneyi hafızaya kaydet
+                EditorPrefs.SetString(PreviousSceneKey, currentScene);
+
+                // Değişiklikleri kaydetmeyi sor (İptal edilirse Play'i durdur)
+                if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                {
+                    EditorApplication.isPlaying = false;
+                    return;
+                }
+
+                // Boot sahnesine geç
+                EditorSceneManager.OpenScene(BootScenePath);
             }
 
-            // Boot sahnesini aç, play mode zaten başlıyor
-            EditorSceneManager.OpenScene(BootScenePath);
+            // --- OYUNDAN ÇIKARKEN ---
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                // Hafızada kayıtlı bir sahne var mı bak
+                if (EditorPrefs.HasKey(PreviousSceneKey))
+                {
+                    string lastScene = EditorPrefs.GetString(PreviousSceneKey);
+
+                    // Kayıtlı sahne mevcut sahneden farklıysa (yani şu an Boot'taysak) geri dön
+                    if (!string.IsNullOrEmpty(lastScene) && SceneManager.GetActiveScene().path != lastScene)
+                    {
+                        EditorSceneManager.OpenScene(lastScene);
+                    }
+                }
+            }
         }
     }
 }

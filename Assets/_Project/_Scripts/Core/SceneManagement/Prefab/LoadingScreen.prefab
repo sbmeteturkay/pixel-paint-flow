@@ -594,5 +594,5 @@ MonoBehaviour:
   _canvasGroup: {fileID: 1871976499572843969}
   _progressBar: {fileID: 9179480397279620761}
   _fadeDuration: 0.3
-  _minLoadDuration: 0.8
+  _minLoadDuration: 0
   _progressSmooth: 6
