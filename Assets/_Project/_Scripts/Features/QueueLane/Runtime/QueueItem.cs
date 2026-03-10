@@ -19,6 +19,7 @@ namespace PaintFlow.Features.QueueLane
         {
             _itemType = itemData.itemType;
             _returnToPool = returnToPool;
+            _onMove01 = 0f;
         }
 
         public void SetOnMove01(float onMove01)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using PaintFlow.Core.Gameplay;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Pool;
@@ -19,6 +20,7 @@ namespace PaintFlow.Features.QueueLane
 
         private int _laneIndex;
         private Action<QueueLaneItemPoppedEvent> _onItemPopped;
+        private Vector3 slidedPosition;
 
         private void Awake()
         {
@@ -26,6 +28,8 @@ namespace PaintFlow.Features.QueueLane
             {
                 _itemRoot = transform;
             }
+
+            slidedPosition = _itemRoot.transform.localPosition;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -63,7 +67,8 @@ namespace PaintFlow.Features.QueueLane
             if (nextItem != null)
             {
                 float shiftDistance = GetSpacing(poppedItem.ItemType, nextItem.ItemType);
-                _itemRoot.localPosition += Vector3.forward * shiftDistance;
+                slidedPosition += Vector3.forward * shiftDistance;
+                Tween.LocalPosition(_itemRoot, slidedPosition, .4f);
             }
 
             _onItemPopped?.Invoke(new(_laneIndex, poppedItem));
@@ -161,10 +166,10 @@ namespace PaintFlow.Features.QueueLane
                     continue;
                 }
 
-                QueueLanePrefabBinding localBinding = binding;
+                QueueLanePrefabBinding localBindingSo = binding;
 
                 ObjectPool<QueueItem> pool = new(
-                    () => Instantiate(localBinding.prefab, _itemRoot),
+                    () => Instantiate(localBindingSo.prefab, _itemRoot),
                     item => { item.gameObject.SetActive(true); },
                     item =>
                     {
@@ -179,10 +184,10 @@ namespace PaintFlow.Features.QueueLane
                         }
                     },
                     false,
-                    Mathf.Max(1, localBinding.defaultCapacity),
-                    Mathf.Max(1, localBinding.maxSize));
+                    Mathf.Max(1, localBindingSo.defaultCapacity),
+                    Mathf.Max(1, localBindingSo.maxSize));
 
-                _poolsByType.Add(localBinding.itemType, pool);
+                _poolsByType.Add(localBindingSo.itemType, pool);
             }
         }
     }

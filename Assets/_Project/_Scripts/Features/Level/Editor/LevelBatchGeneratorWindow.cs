@@ -1,5 +1,10 @@
 #if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using PaintFlow.Core.Gameplay;
 using PaintFlow.Features.Level;
+using PaintFlow.Features.QueueLane;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +13,7 @@ namespace PaintFlow.Features.Level.Editor
     public class LevelBatchGeneratorWindow : EditorWindow
     {
         private const string LevelsFolderPath = "Assets/_Project/Level/Data/Resources/Levels";
+        private const string ItemResourcesPath = "Items";
 
         private int _startLevelId = 1;
         private int _levelCount = 100;
@@ -42,6 +48,13 @@ namespace PaintFlow.Features.Level.Editor
                 return;
             }
 
+            List<ItemPrefabBinding> allPrefabs = LoadItemPrefabsFromResources();
+            if (allPrefabs.Count == 0)
+            {
+                Debug.LogWarning("No item prefabs found in Resources/Items. Ensure prefab names match ItemType enum values.");
+                return;
+            }
+
             EnsureFolderExists(LevelsFolderPath);
 
             for (int i = 0; i < _levelCount; i++)
@@ -66,6 +79,7 @@ namespace PaintFlow.Features.Level.Editor
 
                 levelData.levelId = levelId;
                 levelData.seed = _baseSeed + levelId;
+                levelData.itemPrefabs = BuildPrefabSubset(allPrefabs, levelId);
                 levelData.RegenerateFromSeed();
                 EditorUtility.SetDirty(levelData);
             }
@@ -73,6 +87,42 @@ namespace PaintFlow.Features.Level.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log($"Generated levels at: {LevelsFolderPath}");
+        }
+
+        private static List<ItemPrefabBinding> LoadItemPrefabsFromResources()
+        {
+            QueueItem[] prefabs = Resources.LoadAll<QueueItem>(ItemResourcesPath);
+            List<ItemPrefabBinding> bindings = new();
+
+            foreach (QueueItem prefab in prefabs)
+            {
+                if (prefab == null)
+                {
+                    continue;
+                }
+
+                if (!Enum.TryParse(prefab.name, out ItemType itemType))
+                {
+                    continue;
+                }
+
+                bindings.Add(new ItemPrefabBinding
+                {
+                    itemType = itemType,
+                    prefab = prefab,
+                    defaultCapacity = 8,
+                    maxSize = 32
+                });
+            }
+
+            return bindings.OrderBy(b => b.itemType).ToList();
+        }
+
+        private static List<ItemPrefabBinding> BuildPrefabSubset(List<ItemPrefabBinding> allPrefabs, int levelId)
+        {
+            int totalTypes = allPrefabs.Count;
+            int allowedCount = Mathf.Clamp(2 + levelId / 5, 1, totalTypes);
+            return allPrefabs.Take(allowedCount).ToList();
         }
 
         private static void EnsureFolderExists(string fullFolderPath)

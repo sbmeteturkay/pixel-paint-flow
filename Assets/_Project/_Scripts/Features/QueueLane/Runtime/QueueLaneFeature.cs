@@ -10,9 +10,8 @@ namespace PaintFlow.Features.QueueLane
     {
         [SerializeField] private QueueLane _lanePrefab;
         [SerializeField] private Transform _laneRoot;
-        [SerializeField] private float _laneSpacing = 2.5f;
-        [SerializeField] private bool _buildOnStart = true;
-
+        private readonly bool _buildOnStart = true;
+        private readonly float _laneSpacing = 2.5f;
         private readonly List<QueueLane> _runtimeLanes = new();
         private IPublisher<QueueLaneItemPoppedEvent> _itemPoppedPublisher;
         private LevelLoader _levelLoader;
@@ -50,13 +49,13 @@ namespace PaintFlow.Features.QueueLane
 
             List<QueueLanePrefabBinding> bindings = ConvertBindings(levelData.itemPrefabs);
             Transform parent = _laneRoot != null ? _laneRoot : transform;
-            float levelDataLaneCount = _laneSpacing / 2 * (levelData.lanes.Count - 1);
+            float centeringOffset = _laneSpacing / 2 * (levelData.lanes.Count - 1);
 
             for (int i = 0; i < levelData.lanes.Count; i++)
             {
                 QueueLane lane = Instantiate(_lanePrefab, parent);
                 lane.transform.localPosition =
-                    new(i * _laneSpacing - levelDataLaneCount, 0f, 0f);
+                    new(i * _laneSpacing - centeringOffset, 0f, 0f);
                 lane.transform.localRotation = Quaternion.identity;
                 lane.Initialize(i, levelData.lanes[i].items, bindings, PublishPoppedItem);
                 _runtimeLanes.Add(lane);
@@ -94,7 +93,7 @@ namespace PaintFlow.Features.QueueLane
 
         private void PublishPoppedItem(QueueLaneItemPoppedEvent poppedEvent)
         {
-            _itemPoppedPublisher?.Publish(poppedEvent);
+            _itemPoppedPublisher?.Publish(new(poppedEvent.LaneIndex, poppedEvent.Item));
         }
 
         private void ClearLanes()

@@ -12,17 +12,18 @@ namespace PaintFlow.Core.Installers
     {
         [SerializeField] private LevelLoader _levelLoader;
         [SerializeField] private QueueLaneFeature _queueLaneFeature;
-        [SerializeField] private ThrownItemBuffer _thrownItemBuffer;
+        [SerializeField] private PoppedItemSplineFlow _poppedItemSplineFlow;
         [SerializeField] private ItemRequesterFeature _itemRequesterFeature;
 
         protected override void Configure(IContainerBuilder builder)
         {
             MessagePipeOptions options = builder.RegisterMessagePipe();
             builder.RegisterMessageBroker<QueueLaneItemPoppedEvent>(options);
+            builder.RegisterMessageBroker<SplineCapacityReachedEvent>(options);
 
             RegisterIfNotNull(builder, _levelLoader);
             RegisterIfNotNull(builder, _queueLaneFeature);
-            RegisterIfNotNull(builder, _thrownItemBuffer);
+            RegisterIfNotNull(builder, _poppedItemSplineFlow);
             RegisterIfNotNull(builder, _itemRequesterFeature);
         }
 

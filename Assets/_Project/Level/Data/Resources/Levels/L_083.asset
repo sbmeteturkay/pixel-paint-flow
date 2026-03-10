@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9239b73440864cf487ec68534609a5ef, type: 3}
+  m_Name: L_083
+  m_EditorClassIdentifier: Assembly-CSharp::PaintFlow.Features.Level.LevelData
+  levelId: 83
+  seed: 1083
+  laneCount: 2
+  requesterCount: 2
+  lanes:
+  - items:
+    - itemType: 1
+    - itemType: 1
+    - itemType: 1
+    - itemType: 1
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+  - items:
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 0
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+    - itemType: 2
+  requesters:
+  - minMove01: 0.23
+    maxMove01: 0.27
+    requests:
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 4
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 6
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 4
+    - itemType: 1
+      icon: {fileID: 21300000, guid: b6975c3de651f42babaed097a5f3312b, type: 3}
+      count: 4
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 4
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 2
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 4
+  - minMove01: 0.73
+    maxMove01: 0.77
+    requests:
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 4
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 4
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 2
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 6
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 6
+    - itemType: 2
+      icon: {fileID: 21300000, guid: fa8d7e24e8b094f028e98ed7813eed4d, type: 3}
+      count: 2
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 6
+    - itemType: 0
+      icon: {fileID: 21300000, guid: cedea9cb0486e414d8ec8794ffb9846e, type: 3}
+      count: 4
+  itemPrefabs:
+  - itemType: 0
+    prefab: {fileID: 3444815949733770286, guid: 53d9c2330c5eed846866afe52abfafec, type: 3}
+    defaultCapacity: 8
+    maxSize: 32
+  - itemType: 1
+    prefab: {fileID: 2429763714125020697, guid: f556bd658700a714fbdde6083847382d, type: 3}
+    defaultCapacity: 8
+    maxSize: 32
+  - itemType: 2
+    prefab: {fileID: 3175724097722853166, guid: 248dcd4ca1d01944da3c21e6b4a96503, type: 3}
+    defaultCapacity: 8
+    maxSize: 32
+  totalBlockCount: 20
+  requesterWindowSize: 0.04

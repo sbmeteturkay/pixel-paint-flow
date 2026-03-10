@@ -132,7 +132,7 @@ GameObject:
   m_Layer: 0
   m_Name: GameLifetimeScope
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -154,7 +154,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _levelLoader: {fileID: 1007383226}
   _queueLaneFeature: {fileID: 446110299}
-  _thrownItemBuffer: {fileID: 1537284328}
+  _poppedItemSplineFlow: {fileID: 1537284328}
   _itemRequesterFeature: {fileID: 1199769389}
 --- !u!4 &100475667
 Transform:
@@ -495,8 +495,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PaintFlow.Features.QueueLane.QueueLaneFeature
   _lanePrefab: {fileID: 7884462913346353883, guid: 9c03b868f7a28ea48b24ca6981e908d2, type: 3}
   _laneRoot: {fileID: 446110298}
-  _laneSpacing: 5
-  _buildOnStart: 1
 --- !u!1 &499853165
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,8 +714,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1199769387}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.57638, y: -15.0661, z: 8.34105}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -735,10 +733,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9159b85205d8144ac3450f443ef1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PaintFlow.Features.ItemRequester.ItemRequesterFeature
+  _poppedItemSplineFlow: {fileID: 1537284328}
   _requesterPrefab: {fileID: 4113933777136024172, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
   _requesterRoot: {fileID: 1199769388}
-  _buildOnStart: 1
-  _thrownItemBuffer: {fileID: 1537284328}
 --- !u!1 &1362740184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1279,7 +1276,7 @@ GameObject:
   - component: {fileID: 1537284327}
   - component: {fileID: 1537284328}
   m_Layer: 0
-  m_Name: ThrownItemBuffer
+  m_Name: PoppedItemSplineFlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1309,9 +1306,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1537284326}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c278666a06f2d64c92330195c7e4c9f, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c60d251b2d6fda4fa639f117f98cb59, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PaintFlow.Features.ItemRequester.ThrownItemBuffer
+  m_EditorClassIdentifier: Assembly-CSharp::PaintFlow.Features.QueueLane.PoppedItemSplineFlow
+  _splineContainer: {fileID: 1362740189}
+  _loopDuration: 2.5
+  _loseItemCount: 32
 --- !u!1 &1545797963
 GameObject:
   m_ObjectHideFlags: 0
@@ -1450,7 +1450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
@@ -1558,8 +1558,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 499853166}
   - {fileID: 100475667}
+  - {fileID: 499853166}
   - {fileID: 1007383225}
   - {fileID: 446110298}
   - {fileID: 1537284327}
@@ -1597,6 +1597,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1966060591
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.69754
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.43959
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125617810541464318, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2251251670593855663, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_Name
+      value: ItemRequester
+      objectReference: {fileID: 0}
+    - target: {fileID: 2251251670593855663, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 32b2a5987fa82db44a1b835a456975c8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1606,3 +1667,4 @@ SceneRoots:
   - {fileID: 1720308495}
   - {fileID: 1693791880}
   - {fileID: 1545797964}
+  - {fileID: 1966060591}

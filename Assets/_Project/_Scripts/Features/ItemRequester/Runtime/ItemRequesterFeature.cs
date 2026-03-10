@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using PaintFlow.Core.Gameplay;
 using PaintFlow.Features.Level;
+using PaintFlow.Features.QueueLane;
+using PrimeTween;
 using UnityEngine;
 using VContainer;
 
@@ -7,13 +10,19 @@ namespace PaintFlow.Features.ItemRequester
 {
     public class ItemRequesterFeature : MonoBehaviour
     {
+        private readonly bool _buildOnStart = true;
+
+        [Header("Matched Item Animation")]
+        private readonly float _matchedDuration = 0.5f;
+
+        private readonly float _matchedJumpHeight = 3f;
+        private readonly int _matchedSpinTurns = 3;
+        private readonly List<ItemRequester> _runtimeRequesters = new();
+        private readonly Vector3 _spinAxis = Vector3.up;
+        private LevelLoader _levelLoader;
+        [SerializeField] private PoppedItemSplineFlow _poppedItemSplineFlow;
         [SerializeField] private ItemRequester _requesterPrefab;
         [SerializeField] private Transform _requesterRoot;
-        [SerializeField] private bool _buildOnStart = true;
-        [SerializeField] private ThrownItemBuffer _thrownItemBuffer;
-
-        private readonly List<ItemRequester> _runtimeRequesters = new();
-        private LevelLoader _levelLoader;
 
         [Inject]
         public void Construct(LevelLoader levelLoader)
@@ -31,7 +40,7 @@ namespace PaintFlow.Features.ItemRequester
 
         private void Update()
         {
-            if (_thrownItemBuffer == null || _runtimeRequesters.Count == 0)
+            if (_poppedItemSplineFlow == null || _runtimeRequesters.Count == 0)
             {
                 return;
             }
@@ -39,16 +48,8 @@ namespace PaintFlow.Features.ItemRequester
             bool consumed;
             do
             {
-                consumed = false;
-                for (int i = 0; i < _runtimeRequesters.Count; i++)
-                {
-                    if (_runtimeRequesters[i].TryConsume(_thrownItemBuffer))
-                    {
-                        consumed = true;
-                    }
-                }
-            }
-            while (consumed);
+                consumed = ProcessAllMatchesOnce();
+            } while (consumed);
         }
 
         public void BuildCurrentLevel()
@@ -73,6 +74,52 @@ namespace PaintFlow.Features.ItemRequester
                 requester.Initialize(levelData.requesters[i]);
                 _runtimeRequesters.Add(requester);
             }
+        }
+
+        private bool ProcessAllMatchesOnce()
+        {
+            bool consumedAny = false;
+
+            for (int i = 0; i < _runtimeRequesters.Count; i++)
+            {
+                if (!_runtimeRequesters[i].TryConsumeOne(_poppedItemSplineFlow, out IQueueItem matchedItem))
+                {
+                    continue;
+                }
+
+                consumedAny = true;
+                PlayMatchedAnimation(matchedItem, _runtimeRequesters[i].transform.position);
+            }
+
+            return consumedAny;
+        }
+
+        private void PlayMatchedAnimation(IQueueItem matchedItem, Vector3 transformPosition)
+        {
+            if (matchedItem == null || matchedItem.GameObject == null)
+            {
+                return;
+            }
+
+            Transform itemTransform = matchedItem.GameObject.transform;
+            Vector3 startPosition = itemTransform.position;
+            Vector3 spinDelta = _spinAxis.normalized * (360f * Mathf.Max(1, _matchedSpinTurns));
+            float duration = Mathf.Max(0.01f, _matchedDuration);
+            float jumpHeight = Mathf.Max(0f, _matchedJumpHeight);
+
+            Sequence.Create()
+                .Group(Tween.Custom(
+                    0f,
+                    1f,
+                    duration,
+                    t =>
+                    {
+                        float yOffset = 4f * jumpHeight * t * (1f - t);
+                        itemTransform.position = startPosition * (1 - t) + transformPosition * t + Vector3.up * yOffset;
+                    },
+                    Ease.OutQuad))
+                .Group(Tween.Rotation(itemTransform, spinDelta, duration, Ease.Linear))
+                .OnComplete(matchedItem, item => item.ReturnToPool());
         }
 
         private void ClearRequesters()

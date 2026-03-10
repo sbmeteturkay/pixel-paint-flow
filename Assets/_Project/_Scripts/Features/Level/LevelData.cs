@@ -11,19 +11,23 @@ namespace PaintFlow.Features.Level
     {
         [Header("Identity")]
         public int levelId;
+
         public int seed = 1;
 
         [Header("Defaults")]
         [Min(1)] public int laneCount = 2;
+
         [Min(1)] public int requesterCount = 2;
 
         [Header("Gameplay Data")]
         public List<LaneDefinition> lanes = new();
+
         public List<RequesterDefinition> requesters = new();
         public List<ItemPrefabBinding> itemPrefabs = new();
 
         [Header("Generation")]
         [Min(1)] public int totalBlockCount = 20;
+
         [Range(0.01f, 0.49f)] public float requesterWindowSize = 0.04f;
 
         [ContextMenu("Regenerate From Seed")]
@@ -51,6 +55,7 @@ namespace PaintFlow.Features.Level
     public class ItemRequestDefinition
     {
         public ItemType itemType;
+        public Sprite icon;
         [Min(2)] public int count = 2;
     }
 

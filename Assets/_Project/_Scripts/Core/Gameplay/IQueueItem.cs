@@ -7,6 +7,7 @@ namespace PaintFlow.Core.Gameplay
         ItemType ItemType { get; }
         float OnMove01 { get; }
         GameObject GameObject { get; }
+        void SetOnMove01(float onMove01);
         void ReturnToPool();
     }
 }

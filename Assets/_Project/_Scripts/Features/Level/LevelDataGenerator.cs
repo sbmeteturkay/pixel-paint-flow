@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PaintFlow.Core.Gameplay;
-using PaintFlow.Features.QueueLane;
 using UnityEngine;
+using Random = System.Random;
 
 namespace PaintFlow.Features.Level
 {
@@ -22,8 +23,14 @@ namespace PaintFlow.Features.Level
             int totalBlockCount = Mathf.Max(requesterCount, levelData.totalBlockCount);
             float halfWindow = Mathf.Clamp(levelData.requesterWindowSize * 0.5f, 0.005f, 0.245f);
 
-            System.Random random = new(levelData.seed);
-            List<Block> blocks = CreateBlocks(totalBlockCount, random);
+            List<ItemType> allowedTypes = GetAllowedItemTypes(levelData);
+            if (allowedTypes.Count == 0)
+            {
+                return;
+            }
+
+            Random random = new(levelData.seed);
+            List<Block> blocks = CreateBlocks(totalBlockCount, allowedTypes, random);
 
             List<LaneDefinition> lanes = CreateLanes(laneCount);
             for (int i = 0; i < blocks.Count; i++)
@@ -45,9 +52,10 @@ namespace PaintFlow.Features.Level
             {
                 Block block = requestBlocks[i];
                 RequesterDefinition requester = requesters[i % requesterCount];
-                requester.requests.Add(new ItemRequestDefinition
+                requester.requests.Add(new()
                 {
                     itemType = block.ItemType,
+                    icon = block.Icon,
                     count = block.Count
                 });
             }
@@ -58,16 +66,29 @@ namespace PaintFlow.Features.Level
             levelData.requesterCount = requesterCount;
         }
 
-        private static List<Block> CreateBlocks(int totalBlockCount, System.Random random)
+        private static List<ItemType> GetAllowedItemTypes(LevelData levelData)
+        {
+            if (levelData.itemPrefabs != null && levelData.itemPrefabs.Count > 0)
+            {
+                return levelData.itemPrefabs
+                    .Where(binding => binding != null && binding.prefab != null)
+                    .Select(binding => binding.itemType)
+                    .Distinct()
+                    .ToList();
+            }
+
+            return Enum.GetValues(typeof(ItemType)).Cast<ItemType>().ToList();
+        }
+
+        private static List<Block> CreateBlocks(int totalBlockCount, List<ItemType> allowedTypes, Random random)
         {
             List<Block> blocks = new(totalBlockCount);
-            Array itemTypes = Enum.GetValues(typeof(ItemType));
 
             for (int i = 0; i < totalBlockCount; i++)
             {
-                ItemType type = (ItemType)itemTypes.GetValue(random.Next(itemTypes.Length));
+                ItemType type = allowedTypes[random.Next(allowedTypes.Count)];
                 int count = AllowedCounts[random.Next(AllowedCounts.Length)];
-                blocks.Add(new Block(type, count));
+                blocks.Add(new(type, count));
             }
 
             return blocks;
@@ -78,7 +99,7 @@ namespace PaintFlow.Features.Level
             List<LaneDefinition> lanes = new(laneCount);
             for (int i = 0; i < laneCount; i++)
             {
-                lanes.Add(new LaneDefinition());
+                lanes.Add(new());
             }
 
             return lanes;
@@ -88,7 +109,7 @@ namespace PaintFlow.Features.Level
         {
             for (int i = 0; i < block.Count; i++)
             {
-                lane.items.Add(new QueueLaneItemData { itemType = block.ItemType });
+                lane.items.Add(new() { itemType = block.ItemType });
             }
         }
 
@@ -100,11 +121,11 @@ namespace PaintFlow.Features.Level
             {
                 float t = requesterCount == 1 ? 0.5f : i / (requesterCount - 1f);
                 float center = Mathf.Lerp(0.25f, 0.75f, t);
-                requesters.Add(new RequesterDefinition
+                requesters.Add(new()
                 {
                     minMove01 = Mathf.Clamp01(center - halfWindow),
                     maxMove01 = Mathf.Clamp01(center + halfWindow),
-                    requests = new List<ItemRequestDefinition>()
+                    requests = new()
                 });
             }
 
@@ -129,7 +150,7 @@ namespace PaintFlow.Features.Level
             return true;
         }
 
-        private static void Shuffle<T>(IList<T> list, System.Random random)
+        private static void Shuffle<T>(IList<T> list, Random random)
         {
             for (int i = list.Count - 1; i > 0; i--)
             {
@@ -141,11 +162,13 @@ namespace PaintFlow.Features.Level
         private readonly struct Block
         {
             public readonly ItemType ItemType;
+            public readonly Sprite Icon;
             public readonly int Count;
 
             public Block(ItemType itemType, int count)
             {
                 ItemType = itemType;
+                Icon = Resources.Load<Sprite>("Sprites/Items/" + itemType);
                 Count = count;
             }
         }
